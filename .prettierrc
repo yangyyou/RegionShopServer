@@ -2,5 +2,7 @@
   "singleQuote": true,
   "trailingComma": "all",
   "endOfLine": "lf",
-  "requirePragma": false
+  "requirePragma": false,
+  "useTabs": false,
+  "tabWidth": 2
 }
