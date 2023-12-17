@@ -1,6 +1,12 @@
 import { RedisModuleOptions } from '../shared/redis/redis.interface';
 
 export const configuration = () => ({
+  auth: {
+    access_secret: 'access_secret',
+    access_expire: '15m',
+    refresh_secret: 'refresh_secret',
+    refresh_expire: '7d',
+  },
   redis: [
     {
       name: 'default',

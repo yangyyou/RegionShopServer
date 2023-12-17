@@ -7,6 +7,9 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './conf/config.dev';
 import { SharedModule } from './shared/shared.module';
+import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AccessTokenGuard } from './auth/accessToken.guard';
 
 @Module({
   imports: [
@@ -14,8 +17,15 @@ import { SharedModule } from './shared/shared.module';
     ConfigModule.forRoot({ load: [configuration], isGlobal: true }),
     UserModule,
     SharedModule,
+    AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
+  ],
 })
 export class AppModule {}

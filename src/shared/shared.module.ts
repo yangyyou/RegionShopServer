@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { RedisModule } from './redis/redis.module';
 import { ConfigService } from '@nestjs/config';
 import { RedisService } from './redis/redis.service';
 import { RedisModuleOptions } from './redis/redis.interface';
 
 const providers = [RedisService];
-
+@Global()
 @Module({
   imports: [
     RedisModule.registerAsync({
