@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { LoginUserDto } from 'src/user/dto/login_user.dto';
 import { Request } from 'express';
 import { RefreshTokenGuard } from './refreshToken.guard';
-import { AccessTokenGuard } from './accessToken.guard';
 import { Public } from './auth.decorator';
 
 @Controller('auth')
@@ -23,10 +22,9 @@ export class AuthController {
     return this.authSer.login(loginUserDto);
   }
 
-  // @UseGuards(AccessTokenGuard)
-  @Post('ac_test')
-  test() {
-    return 'access token success';
+  @Post('logout')
+  logout(@Req() req: Request) {
+    this.authSer.logout(req.user['sub']);
   }
 
   @Public()

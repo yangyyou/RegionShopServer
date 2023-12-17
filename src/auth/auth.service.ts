@@ -12,6 +12,7 @@ import { User } from 'src/user/entities/user.entity';
 import { encryptPassword } from './encryptPassword';
 import { ConfigService } from '@nestjs/config';
 import { LoginUserDto } from 'src/user/dto/login_user.dto';
+import { REDIS_KEY_REFRESH_TOKEN } from 'src/common/common';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,7 @@ export class AuthService {
     private readonly configSer: ConfigService,
   ) {}
 
+  // 用户注册
   async signup(createUserDto: CreateUserDto) {
     // 检查用户名是否重复
     const exist = await this.userRepo.findOne({
@@ -51,6 +53,7 @@ export class AuthService {
     return tokens;
   }
 
+  // 用户登陆
   async login(loginDto: LoginUserDto) {
     // 查找用户
     const foundUser = await this.userRepo.findOne({
@@ -71,6 +74,27 @@ export class AuthService {
 
     return tokens;
   }
+
+  // 用户退出,删除redis token记录
+  async logout(user_id: number) {
+    const redisCli = this.redisSer.getRedisClient();
+    redisCli.del(REDIS_KEY_REFRESH_TOKEN + user_id);
+  }
+
+  // 刷新refresh token
+  async refreshToken(user_id: number, username: string, refresh_token: string) {
+    const redisCli = this.redisSer.getRedisClient();
+    // 查找redis记录refresh_token是否存在
+    const reToken = await redisCli.get(REDIS_KEY_REFRESH_TOKEN + user_id);
+    if (!reToken || reToken != refresh_token) {
+      throw new UnauthorizedException('请重新登陆');
+    }
+    // 验证通过，生成新的ac，re tokens
+    const tokens = await this.getTokens(user_id, username);
+    this.updateRefreshToken(user_id, tokens.refresh_token);
+    return tokens;
+  }
+
   private async getTokens(id: number, username: string) {
     const [access_token, refresh_token] = await Promise.all([
       this.jwtSer.signAsync(
@@ -98,26 +122,11 @@ export class AuthService {
       'auth.refresh_expire',
     );
 
-    // TODO：设置token超时时间
     this.redisSer.set(
       redisCli,
-      'user:refresh_token:' + user_id,
+      REDIS_KEY_REFRESH_TOKEN + user_id,
       refresh_token,
       refreshToken_expire,
     );
-  }
-
-  // 刷新refresh token
-  async refreshToken(user_id: number, username: string, refresh_token: string) {
-    const redisCli = this.redisSer.getRedisClient();
-    // 查找redis记录refresh_token是否存在
-    const reToken = await redisCli.get('user:refresh_token:' + user_id);
-    if (!reToken || reToken != refresh_token) {
-      throw new UnauthorizedException('请重新登陆');
-    }
-    // 验证通过，生成新的ac，re tokens
-    const tokens = await this.getTokens(user_id, username);
-    this.updateRefreshToken(user_id, tokens.refresh_token);
-    return tokens;
   }
 }
