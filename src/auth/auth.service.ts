@@ -12,7 +12,7 @@ import { User } from 'src/user/entities/user.entity';
 import { encryptPassword } from './encryptPassword';
 import { ConfigService } from '@nestjs/config';
 import { LoginUserDto } from 'src/user/dto/login_user.dto';
-import { REDIS_KEY_REFRESH_TOKEN } from 'src/common/common';
+import { REDIS_KEY_REFRESH_TOKEN } from 'src/common/constant/common';
 
 @Injectable()
 export class AuthService {

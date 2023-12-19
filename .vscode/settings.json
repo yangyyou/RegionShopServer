@@ -1,3 +1,5 @@
 {
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "javascript.preferences.importModuleSpecifier": "project-relative",
+    "typescript.preferences.importModuleSpecifier": "relative"
 }

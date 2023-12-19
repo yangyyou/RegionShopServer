@@ -1,7 +1,7 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { IS_PUBLIC_KEY } from '../common/common';
+import { IS_PUBLIC_KEY } from '../common/constant/common';
 
 @Injectable()
 export class AccessTokenGuard extends AuthGuard('jwt') {
@@ -22,6 +22,9 @@ export class AccessTokenGuard extends AuthGuard('jwt') {
     if (!bAccessToken) return false;
 
     // TODO: 3 RBAC权限检查
+    // redis记录user: role, role： permission 和 permission：router表实现
+    // 获取当前路由信息
+
     return true;
   }
 }
