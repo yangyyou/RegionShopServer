@@ -2,14 +2,9 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRoleDto, UpdateRoleDto } from './role.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Role } from './entities/role.entity';
-import {
-  Collection,
-  EntityManager,
-  EntityRepository,
-  wrap,
-} from '@mikro-orm/core';
+import { EntityManager, EntityRepository, rel, wrap } from '@mikro-orm/core';
 import { Menu } from '../menu/entities/menu.entity';
-import { PickType } from '@nestjs/mapped-types';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class RoleService {
@@ -19,6 +14,7 @@ export class RoleService {
     @InjectRepository(Menu)
     private readonly menuRepo: EntityRepository<Menu>,
     private readonly em: EntityManager,
+    private readonly authSer: AuthService,
   ) {}
 
   async create(createRoleDto: CreateRoleDto) {
@@ -41,6 +37,7 @@ export class RoleService {
     }
 
     await this.em.persistAndFlush(newRole);
+    this.authSer.cacheUpdateRoleMenu(newRole.id);
     return { ...newRole, access_menus: createRoleDto.access_menus };
   }
 
@@ -78,12 +75,13 @@ export class RoleService {
         if (!menu) throw new BadRequestException(`菜单${menu_id}不存在`);
         role.access_menus.add(menu);
       }
+      console.log('更新menu');
     }
 
-    wrap(role).assign({
-      name: updateRoleDto.name,
-      remark: updateRoleDto.remark,
-    });
+    wrap(role).assign(updateRoleDto);
+
+    // 权限改变时，更新缓存
+    if (updateRoleDto.access_menus) this.authSer.cacheUpdateRoleMenu(role.id);
 
     return role;
   }
@@ -92,6 +90,7 @@ export class RoleService {
     const role = await this.roleRepo.findOne({ id: id });
     if (!role) throw new BadRequestException(`菜单${id}不存在`);
     this.em.removeAndFlush(role);
+    this.authSer.cacheRemoveRoleMenu(id);
     return true;
   }
 }

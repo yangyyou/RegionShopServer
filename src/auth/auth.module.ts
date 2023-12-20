@@ -6,9 +6,14 @@ import { AuthController } from './auth.controller';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { User } from 'src/user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
+import { Role } from '../role/entities/role.entity';
+import { Menu } from '../menu/entities/menu.entity';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([User]), JwtModule.register({})],
+  imports: [
+    MikroOrmModule.forFeature([User, Role, Menu]),
+    JwtModule.register({}),
+  ],
   providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
   exports: [AuthService],
   controllers: [AuthController],

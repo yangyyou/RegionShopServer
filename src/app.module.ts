@@ -10,6 +10,8 @@ import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from './auth/accessToken.guard';
+import { RoleModule } from './role/role.module';
+import { MenuModule } from './menu/menu.module';
 
 @Module({
   imports: [
@@ -18,14 +20,17 @@ import { AccessTokenGuard } from './auth/accessToken.guard';
     UserModule,
     SharedModule,
     AuthModule,
+    RoleModule,
+    MenuModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    {
-      provide: APP_GUARD,
-      useClass: AccessTokenGuard,
-    },
+    // TODO: 测试
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: AccessTokenGuard,
+    // },
   ],
 })
 export class AppModule {}

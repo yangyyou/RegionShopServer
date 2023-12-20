@@ -7,8 +7,8 @@ import { CreateMenuDto, UpdateMenuDto } from './menu.dto';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Menu } from './entities/menu.entity';
 import { EntityManager, EntityRepository, wrap } from '@mikro-orm/core';
-import { RedisService } from 'src/shared/redis/redis.service';
 import { MENU_TYPE } from './menu.constant';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class MenuService {
@@ -16,7 +16,7 @@ export class MenuService {
     @InjectRepository(Menu)
     private readonly menuRepo: EntityRepository<Menu>,
     private readonly em: EntityManager,
-    private readonly redisSer: RedisService,
+    private readonly authSer: AuthService,
   ) {}
 
   async create(createMenuDto: CreateMenuDto) {
@@ -58,6 +58,7 @@ export class MenuService {
     } catch (error) {
       throw new BadRequestException(error);
     }
+
     return newMenu;
   }
 
@@ -110,6 +111,11 @@ export class MenuService {
       throw new BadRequestException(error);
     }
 
+    // 当enable、router改变时，更新缓存
+    if (updateMenuDto.enable != undefined || updateMenuDto.router) {
+      this.authSer.cacheUpdateRoleMenu();
+    }
+
     return menu;
   }
 
@@ -119,10 +125,13 @@ export class MenuService {
       throw new NotFoundException('没有找到要删除的菜单');
     }
     try {
-      this.em.removeAndFlush(delMenu);
+      await this.em.removeAndFlush(delMenu);
     } catch (error) {
       throw new BadRequestException(error);
     }
+    console.log(`delete menu ${id}`);
+    // 当menu删除时，更新role menu 缓存
+    this.authSer.cacheUpdateRoleMenu();
     return true;
   }
 }

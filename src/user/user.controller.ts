@@ -1,48 +1,43 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { AccessTokenGuard } from 'src/auth/accessToken.guard';
-import { RefreshTokenGuard } from 'src/auth/refreshToken.guard';
-import { Public } from 'src/auth/auth.decorator';
+import { Request } from 'express';
+import { CreateUserDto, IdUserDto, UpdateUserDto } from './dto/user.dto';
+import { AccessTokenGuard } from '../auth/accessToken.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
+  // 获取所有用户
   @UseGuards(AccessTokenGuard)
-  // @Public()
-  @Get()
+  @Get('list')
   findAll() {
     return this.userService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.userService.findOne(+id);
+  // 获取某个用户信息
+  @Get('profile')
+  getProfile(@Req() req: Request) {
+    return this.userService.findOne(req.user['sub']);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  @Post('get')
+  findOne(@Body() idDto: IdUserDto) {
+    return this.userService.findOne(idDto.id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.userService.remove(+id);
+  @Post('update')
+  update(@Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(updateUserDto);
+  }
+
+  @Post('delete')
+  remove(@Body() idDto: IdUserDto) {
+    return this.userService.remove(idDto.id);
   }
 }

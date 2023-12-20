@@ -9,7 +9,7 @@ import {
   Max,
 } from 'class-validator';
 import { MENU_TYPE } from './menu.constant';
-import { OmitType, PartialType } from '@nestjs/mapped-types';
+import { PartialType } from '@nestjs/mapped-types';
 
 export class CreateMenuDto {
   @IsString()

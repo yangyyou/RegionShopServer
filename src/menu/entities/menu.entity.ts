@@ -42,8 +42,18 @@ export class Menu extends BaseEntity {
 
   @Property({ persist: false })
   get router_path() {
-    if (!this.parent) return this.router;
-    return this.parent.router_path + '/' + this.router;
+    let router_list: string[] = [];
+    let parent = this.parent;
+
+    if (!this.parent) return '/' + this.router;
+
+    while (parent) {
+      router_list.push(parent.router);
+      parent = parent.parent;
+    }
+    router_list = router_list.reverse();
+    const path = router_list.join('/');
+    return '/' + path + '/' + this.router;
   }
 
   @Enum(() => MENU_TYPE)

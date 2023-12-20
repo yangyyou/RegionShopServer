@@ -14,6 +14,7 @@ export const MikroOrmConfig = defineConfig({
   dbName: 'region_shop',
   user: 'root',
   password: 'root',
+  allowGlobalContext: true,
   metadataProvider: TsMorphMetadataProvider,
 
   entities: [__dirname + '/../dist/**/*.entity.js'],

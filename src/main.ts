@@ -9,6 +9,9 @@ async function bootstrap() {
   // 启用全局DTO验证
   app.useGlobalPipes(new ValidationPipe());
 
+  // 启用关闭hook清理缓存
+  app.enableShutdownHooks();
+
   await app.listen(3000);
 }
 bootstrap();
