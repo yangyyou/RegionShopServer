@@ -1,4 +1,4 @@
-import { PartialType, PickType } from '@nestjs/mapped-types';
+import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
 import {
   IsArray,
   IsEmail,
@@ -35,13 +35,17 @@ export class CreateUserDto {
   age: number;
 
   @IsString()
+  @IsOptional()
   @Matches(/^1[35789][0-9]{9}$/, {
     message: '请输入正确的手机号',
   })
   phone?: string;
 }
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
+export class UpdateUserDto extends OmitType(CreateUserDto, [
+  'username',
+  'password',
+]) {
   @IsNumber()
   id: number;
 }
