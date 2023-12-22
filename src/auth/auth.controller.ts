@@ -4,7 +4,9 @@ import { Request } from 'express';
 import { RefreshTokenGuard } from './refreshToken.guard';
 import { Public } from './auth.decorator';
 import { CreateUserDto, LoginUserDto } from '../user/dto/user.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth认证模块')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authSer: AuthService) {}

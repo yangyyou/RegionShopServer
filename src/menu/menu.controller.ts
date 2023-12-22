@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Delete } from '@nestjs/common';
 import { MenuService } from './menu.service';
 
-import { Public } from 'src/auth/auth.decorator';
 import { CreateMenuDto, IdMenuDto, UpdateMenuDto } from './menu.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('menu菜单模块')
 @Controller('menu')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}

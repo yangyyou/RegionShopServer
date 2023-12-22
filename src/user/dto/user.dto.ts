@@ -1,4 +1,5 @@
-import { OmitType, PartialType, PickType } from '@nestjs/mapped-types';
+import { PickType } from '@nestjs/mapped-types';
+import { ApiProperty, PartialType, OmitType } from '@nestjs/swagger';
 import {
   IsArray,
   IsEmail,
@@ -10,30 +11,46 @@ import {
   Max,
   Min,
 } from 'class-validator';
+import { User } from '../entities/user.entity';
+import { Collection } from '@mikro-orm/core';
+import { Role } from '../../role/entities/role.entity';
 
 export class CreateUserDto {
+  /***
+   * 创建用户名
+   * @example: user
+   */
+  @ApiProperty()
   @IsString()
   @Length(8, 16)
   username!: string;
 
+  @ApiProperty()
   @IsString()
   @Length(6, 20)
   password!: string;
 
+  @ApiProperty()
   @IsArray()
   @IsOptional()
   roles: number[];
 
+  @ApiProperty()
   @IsEmail()
   @IsOptional()
   email?: string;
 
+  @ApiProperty()
   @IsNumber()
   @IsOptional()
   @Min(5)
   @Max(100)
-  age: number;
+  age?: number;
 
+  /**
+   * 手机号
+   */
+  @ApiProperty()
   @IsString()
   @IsOptional()
   @Matches(/^1[35789][0-9]{9}$/, {
@@ -42,10 +59,10 @@ export class CreateUserDto {
   phone?: string;
 }
 
-export class UpdateUserDto extends OmitType(CreateUserDto, [
-  'username',
-  'password',
-]) {
+export class UpdateUserDto extends PartialType(
+  OmitType(CreateUserDto, ['username', 'password']),
+) {
+  @ApiProperty({ name: '用户id' })
   @IsNumber()
   id: number;
 }
@@ -56,6 +73,7 @@ export class LoginUserDto extends PickType(CreateUserDto, [
 ]) {}
 
 export class IdUserDto {
+  @ApiProperty()
   @IsNumber()
   id: number;
 }

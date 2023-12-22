@@ -9,7 +9,9 @@ import {
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto, IdRoleDto, UpdateRoleDto } from './role.dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('role角色模块')
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}

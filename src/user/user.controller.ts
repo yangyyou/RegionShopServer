@@ -3,7 +3,9 @@ import { UserService } from './user.service';
 import { Request } from 'express';
 import { CreateUserDto, IdUserDto, UpdateUserDto } from './dto/user.dto';
 import { AccessTokenGuard } from '../auth/accessToken.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user用户模块')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

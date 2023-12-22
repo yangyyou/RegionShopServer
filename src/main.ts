@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { AccessTokenGuard } from './auth/accessToken.guard';
 import { ResponseInterceptor } from './common/response/response.interceptor';
 import { HttpExceptionFilter } from './common/http_excetion_filter/http_exception.filter';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,6 +20,15 @@ async function bootstrap() {
 
   // 启用关闭hook清理缓存
   app.enableShutdownHooks();
+
+  // 启用swagger api文档
+  const config = new DocumentBuilder()
+    .setTitle('region shop api文档')
+    .setDescription(' api文档')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
 }
