@@ -26,7 +26,15 @@ async function bootstrap() {
     .setTitle('region shop api文档')
     .setDescription(' api文档')
     .setVersion('1.0')
+    .addBearerAuth({
+      type: 'http',
+      in: 'header',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      description: '基于jwt认证',
+    })
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
