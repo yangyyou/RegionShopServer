@@ -11,9 +11,6 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { User } from '../entities/user.entity';
-import { Collection } from '@mikro-orm/core';
-import { Role } from '../../role/entities/role.entity';
 
 export class CreateUserDto {
   /***

@@ -16,7 +16,7 @@ export class Menu extends BaseEntity {
   @Property({ unique: true })
   name!: string;
 
-  @ManyToOne({ hidden: true })
+  @ManyToOne({ eager: true, hidden: true })
   parent?: Menu;
 
   @OneToMany(() => Menu, (menu) => menu.parent, {

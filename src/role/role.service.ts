@@ -43,8 +43,14 @@ export class RoleService {
 
   findAll() {
     return this.roleRepo.findAll({
-      fields: ['id', 'name', 'remark', 'access_menus.id', 'access_menus.name'],
-      // populate: ['access_menus.id'],
+      fields: [
+        'id',
+        'name',
+        'remark',
+        'access_menus.id',
+        'access_menus.name',
+        'access_menus.router',
+      ],
     });
   }
 

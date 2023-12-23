@@ -57,8 +57,10 @@ export class UserService {
         user.roles.add(role);
       }
     }
-
-    wrap(user).assign({ ...updateUserDto });
+    for (const key in updateUserDto) {
+      if (key != 'id' && key != 'roles') user[key] = updateUserDto[key];
+    }
+    this.em.persistAndFlush(user);
     // 如果role更新则更新缓存
     if (updateUserDto.roles) this.authSer.cacheUpdateUserRole(updateUserDto.id);
     return user;
