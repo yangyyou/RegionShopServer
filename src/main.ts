@@ -5,6 +5,7 @@ import { AccessTokenGuard } from './auth/accessToken.guard';
 import { ResponseInterceptor } from './common/response/response.interceptor';
 import { HttpExceptionFilter } from './common/http_excetion_filter/http_exception.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LOGGER_TOKEN } from './shared/logger/logger.interface';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,6 +21,9 @@ async function bootstrap() {
 
   // 启用关闭hook清理缓存
   app.enableShutdownHooks();
+
+  // 启用自定义日志
+  app.useLogger(app.get(LOGGER_TOKEN));
 
   // 启用swagger api文档
   const config = new DocumentBuilder()

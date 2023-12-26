@@ -1,3 +1,4 @@
+import { LoggerModuleOptions } from '../shared/logger/logger.interface';
 import { RedisModuleOptions } from '../shared/redis/redis.interface';
 
 export const configuration = () => ({
@@ -16,6 +17,15 @@ export const configuration = () => ({
       db: 0,
     },
   ] as RedisModuleOptions[],
+  logger: {
+    level: 'warn',
+    consoleLevel: 'debug',
+    disableConsoleAtProd: false,
+    appLogName: 'app',
+    errorLogName: 'err',
+    maxFile: '14d',
+    maxFileSize: '10m',
+  } as LoggerModuleOptions,
 });
 
 export default configuration;

@@ -8,8 +8,6 @@ import { ConfigModule } from '@nestjs/config';
 import configuration from './conf/config.dev';
 import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AccessTokenGuard } from './auth/accessToken.guard';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
 
@@ -22,6 +20,7 @@ import { MenuModule } from './menu/menu.module';
     AuthModule,
     RoleModule,
     MenuModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [

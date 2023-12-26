@@ -1,10 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { User } from './entities/user.entity';
 import { EntityManager, EntityRepository, wrap } from '@mikro-orm/core';
 import { Role } from '../role/entities/role.entity';
 import { AuthService } from '../auth/auth.service';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
+import { LOGGER_TOKEN } from '../shared/logger/logger.interface';
+import { LoggerService } from '../shared/logger/logger.service';
 
 @Injectable()
 export class UserService {
@@ -16,6 +18,9 @@ export class UserService {
     private readonly em: EntityManager,
     private readonly authSer: AuthService,
   ) {}
+
+  @Inject(LOGGER_TOKEN)
+  logger: LoggerService;
 
   // 管理员创建用户
   create(createUserDto: CreateUserDto) {
@@ -35,7 +40,14 @@ export class UserService {
       { populate: ['roles.id', 'roles.name'] },
     );
     if (!user) throw new BadRequestException(`用户${id}不存在`);
+    this.logger.debug(`获取用户${id}信息`);
+    this.logger.log(`获取用户${id}信息`);
 
+    this.logger.warn(`获取用户${id}信息`);
+
+    this.logger.error(`获取用户${id}信息`);
+
+    this.logger.verbose(`获取用户${id}信息`);
     return user;
   }
 
@@ -57,7 +69,9 @@ export class UserService {
         user.roles.add(role);
       }
     }
-    for (const key in updateUserDto) {
+
+    let key: keyof UpdateUserDto;
+    for (key in updateUserDto) {
       if (key != 'id' && key != 'roles') user[key] = updateUserDto[key];
     }
     this.em.persistAndFlush(user);
