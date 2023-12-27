@@ -85,6 +85,7 @@ export class RoleService {
     }
 
     wrap(role).assign(updateRoleDto);
+    this.em.persistAndFlush(role);
 
     // 权限改变时，更新缓存
     if (updateRoleDto.access_menus) this.authSer.cacheUpdateRoleMenu(role.id);

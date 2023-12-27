@@ -73,8 +73,6 @@ export class LoggerService implements NestLoggerServer {
       (this.options.appLogName = DEFAULT_LOG_APP_NAME);
     !this.options.errorLogName &&
       (this.options.errorLogName = DEFAULT_LOG_ERROR_NAME);
-    console.log('日志文件配置');
-    console.log(this.options);
     this.initWinston();
   }
 

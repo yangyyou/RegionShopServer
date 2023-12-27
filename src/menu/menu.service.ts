@@ -107,6 +107,7 @@ export class MenuService {
 
     try {
       await wrap(menu).assign(updateMenuDto);
+      this.em.persistAndFlush(menu);
     } catch (error) {
       throw new BadRequestException(error);
     }
