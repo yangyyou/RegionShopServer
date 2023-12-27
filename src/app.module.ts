@@ -10,6 +10,7 @@ import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
+import { ParamsModule } from './params/params.module';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { MenuModule } from './menu/menu.module';
     AuthModule,
     RoleModule,
     MenuModule,
-    TasksModule,
+    ParamsModule,
   ],
   controllers: [AppController],
   providers: [
